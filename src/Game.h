@@ -10,6 +10,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
 #include <string>
+#include <cmath>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -17,6 +18,7 @@
 static sf::RenderWindow window;
 static Player p;
 static Enemy eni;
+static Enemy eni2;
 
 class Game {
     public:
