@@ -69,6 +69,7 @@ void Entity::createShape() {
     shape.setFillColor(sf::Color(240, 0, 0));
     shape.setPosition(_x, _y);
 }
+
 void Entity::move(Direction direction) {
     if(direction == NORTH)
         _y -= _movement_rate;
@@ -78,7 +79,86 @@ void Entity::move(Direction direction) {
         _x -= _movement_rate;
     else if(direction == EAST)
         _x += _movement_rate;
+    else if(direction == NORTH_WEST) {
+        _x -= (_movement_rate / 2);
+        _y -= (_movement_rate / 2);
+    } else if(direction == NORTH_EAST) {
+        _x += (_movement_rate / 2);
+        _y -= (_movement_rate / 2);
+    } else if(direction == SOUTH_WEST) {
+        _x -= (_movement_rate / 2);
+        _y += (_movement_rate / 2);
+    } else if(direction == SOUTH_EAST) {
+        _x += (_movement_rate / 2);
+        _y += (_movement_rate / 2);
+    }
 
     _direction = direction;
     shape.setPosition(_x, _y);
+}
+Direction Entity::flipDirection(Direction direction) {
+        if(direction == NORTH) 
+            return SOUTH;
+        else if (direction == SOUTH)
+            return NORTH;
+        else if (direction == WEST)
+            return EAST;
+        else if (direction == EAST)
+            return WEST;
+        else if (direction == NORTH_WEST)
+            return SOUTH_EAST;
+        else if (direction == SOUTH_EAST)
+            return NORTH_WEST;
+        else if (direction == NORTH_EAST)
+            return SOUTH_WEST;
+        else if (direction == SOUTH_WEST)
+            return NORTH_EAST;
+        else
+            return NONE;
+}
+bool Entity::isColliding(Entity e) {
+    bool xOverlap = false;
+    bool yOverlap = false;
+
+    // Check X axis collision
+    
+    // Grab the x axes for both this and e
+    int thisXCoord [2] = {getX(), getX() + getWidth()};
+    int eXCoord [2] = {e.getX(), e.getX() + getWidth()};
+
+    // Determine leftmost shape
+    bool isThisLeftmost;
+    if(thisXCoord[0] < eXCoord[0])
+        isThisLeftmost = true;
+    else
+        isThisLeftmost = false;
+    if(isThisLeftmost) {
+        if((eXCoord[0] - thisXCoord[1]) <= 0)
+            xOverlap = true;
+    } else {
+        if((thisXCoord[0] - eXCoord[1]) <= 0)
+            xOverlap = true;
+    }
+    // Check Y axis collision
+    
+    // Grab the Y axes for both this and e
+    int thisYCoord [2] = {getY(), getY() + getHeight()};
+    int eYCoord [2] = {e.getY(), e.getY() + getHeight()};
+
+    // Determine upmost shape
+    bool isThisUpmost;
+    if(thisYCoord[0] < eYCoord[0])
+        isThisUpmost = true;
+    else
+        isThisUpmost = false;
+    if(isThisUpmost) {
+        if((eYCoord[0] - thisYCoord[1]) <= 0)
+            yOverlap = true;
+    } else {
+        if((thisYCoord[0] - eYCoord[1]) <= 0)
+            yOverlap = true;
+    }
+    
+
+    return (xOverlap && yOverlap);
 }

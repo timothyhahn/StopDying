@@ -2,7 +2,7 @@
 #define ENTITY_H
 #include <SFML/Graphics.hpp>
 
-enum Direction{ NORTH, EAST, WEST, SOUTH };
+enum Direction{ NORTH, NORTH_WEST, NORTH_EAST, WEST, EAST, SOUTH, SOUTH_WEST, SOUTH_EAST, NONE };
 
 class Entity {
     private:
@@ -30,7 +30,9 @@ class Entity {
         sf::RectangleShape shape;
         void setMovementRate(int movement_rate);
         int getMovementRate();
-        void createShape();
+        virtual void createShape();
         void move(Direction direction);
+        bool isColliding(Entity e);
+        Direction flipDirection(Direction direction);
 };
 #endif
