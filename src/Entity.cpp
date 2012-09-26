@@ -123,8 +123,8 @@ bool Entity::isColliding(Entity e) {
     // Check X axis collision
     
     // Grab the x axes for both this and e
-    int thisXCoord [2] = {getX(), getX() + getWidth()};
-    int eXCoord [2] = {e.getX(), e.getX() + getWidth()};
+    float thisXCoord [2] = {getX(), getX() + getWidth()};
+    float eXCoord [2] = {e.getX(), e.getX() + getWidth()};
 
     // Determine leftmost shape
     bool isThisLeftmost;
@@ -142,8 +142,8 @@ bool Entity::isColliding(Entity e) {
     // Check Y axis collision
     
     // Grab the Y axes for both this and e
-    int thisYCoord [2] = {getY(), getY() + getHeight()};
-    int eYCoord [2] = {e.getY(), e.getY() + getHeight()};
+    float thisYCoord [2] = {getY(), getY() + getHeight()};
+    float eYCoord [2] = {e.getY(), e.getY() + getHeight()};
 
     // Determine upmost shape
     bool isThisUpmost;

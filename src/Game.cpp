@@ -55,6 +55,7 @@ int Game::initialize() {
     eni2.createShape();
     
     start();
+    return 0;
 }
 int Game::start() {
 
@@ -77,5 +78,5 @@ int Game::start() {
         window.draw(eni2.shape);
         window.display();
     }
-
+    return 0;
 }
