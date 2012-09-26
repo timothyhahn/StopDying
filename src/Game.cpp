@@ -1,3 +1,4 @@
+
 #include "Game.h"
 
 void checkCollision(Entity e) {
@@ -15,7 +16,8 @@ int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
     p.createShape();
-      
+    eni.createShape();
+
     while(window.isOpen()) {
         sf::Event event;
         while(window.pollEvent(event)) {
@@ -33,7 +35,7 @@ int Game::initialize() {
             p.move(EAST);
         
         checkCollision(p);
-
+        moveEnemy(eni);
 
         window.clear(sf::Color(0,230,0));
         window.draw(p.shape); 

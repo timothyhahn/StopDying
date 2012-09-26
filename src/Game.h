@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 #include "Player.h"
+#include "Enemy.h"
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -15,6 +16,7 @@
 
 static sf::RenderWindow window;
 static Player p;
+static Enemy eni;
 
 class Game {
     public:
