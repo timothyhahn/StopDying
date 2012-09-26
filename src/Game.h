@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "Entity.h"
+#include "Player.h"
 #include <stdio.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>

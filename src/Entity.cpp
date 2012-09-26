@@ -36,3 +36,9 @@ int Entity::getHealth() {
     return _health;
 }
 
+void Entity::createShape() {
+    shape.setSize(sf::Vector2f(50, 50));
+    shape.setFillColor(sf::Color(240, 0, 0));
+    shape.setPosition(_x, _y);
+
+}

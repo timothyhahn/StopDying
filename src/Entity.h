@@ -20,5 +20,6 @@ class Entity {
         void setHealth(int health);
         int getHealth();
         sf::RectangleShape shape;
+        void createShape();
 };
 #endif
