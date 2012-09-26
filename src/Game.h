@@ -14,12 +14,12 @@
 #define SCREEN_HEIGHT 600
 
 static sf::RenderWindow window;
+static Player p;
 
 class Game {
     public:
         int initialize();
         int start();
-
 };
 
 #endif

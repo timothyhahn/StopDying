@@ -9,6 +9,5 @@ StopDying: src/*.cpp src/*.h
 
 run: StopDying
 	./StopDying
-
 clean:
 	rm -f StopDying

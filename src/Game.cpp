@@ -1,10 +1,19 @@
 #include "Game.h"
 
+void checkCollision(Entity e) {
+   if(p.getY() < 0)
+       p.move(SOUTH);
+   if(p.getY() > SCREEN_HEIGHT - p.getHeight())
+       p.move(NORTH);
+   if(p.getX() < 0)
+       p.move(EAST);
+   if(p.getX() > SCREEN_WIDTH - p.getWidth())
+       p.move(WEST);
+}
 
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
-    Player p;
     p.createShape();
       
     while(window.isOpen()) {
@@ -14,15 +23,17 @@ int Game::initialize() {
                 window.close();
         }
 
-
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            p.up();
+            p.move(NORTH);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            p.down();
+            p.move(SOUTH);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            p.left();
+            p.move(WEST);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            p.right();
+            p.move(EAST);
+        
+        checkCollision(p);
+
 
         window.clear(sf::Color(0,230,0));
         window.draw(p.shape); 

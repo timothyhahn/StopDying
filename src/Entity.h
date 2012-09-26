@@ -11,6 +11,8 @@ class Entity {
         Direction _direction;
         int _health;
         float _movement_rate;
+        int _height;
+        int _width;
 
     public:
         Entity();
@@ -21,13 +23,14 @@ class Entity {
         Direction getDirection(); 
         void setHealth(int health);
         int getHealth();
+        void setHeight(int height);
+        int getHeight();
+        void setWidth(int width);
+        int getWidth();
         sf::RectangleShape shape;
         void setMovementRate(int movement_rate);
         int getMovementRate();
         void createShape();
-        void up();
-        void down();
-        void left();
-        void right();
+        void move(Direction direction);
 };
 #endif
