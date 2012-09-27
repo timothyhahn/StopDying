@@ -1,5 +1,4 @@
 #include "Enemy.h"
-
 Enemy::Enemy() {
     setPosition(0,0);
     setDirection(NORTH);
@@ -8,6 +7,7 @@ Enemy::Enemy() {
     setWidth(20);
     setHeight(20);
 }
+
 void Enemy::stalkPlayer(Player p) {
     int yDifference = p.getY() - getY();
     int xDifference = p.getX() - getX();

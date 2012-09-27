@@ -13,14 +13,14 @@
 #include <string>
 #include <cmath>
 #include <time.h>
+#include <vector>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
 static sf::RenderWindow window;
 static Player p;
-static Enemy eni;
-static Enemy eni2;
+static std::vector<Enemy *> enemies; // None Player Entities
 static bool game_over;
 static bool game_running;
 class Game {

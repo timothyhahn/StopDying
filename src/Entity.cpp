@@ -1,15 +1,16 @@
 #include "Entity.h"
-
 Entity::Entity() {
     _x = 0;
     _y = 0;
     _direction = NORTH;
-    _health = 100;
-    _movement_rate = 9;
-    _width = 50;
-    _height = 50;
+    _health = 1;
+    _damage = 0;
+    _movement_rate = 10;
+    _width = 1;
+    _height =1;
 }
-
+Entity::~Entity() {
+}
 void Entity::setPosition(float x, float y) {
     _x = x;
     _y = y;
@@ -66,9 +67,10 @@ int Entity::getMovementRate() {
 
 void Entity::createShape() {
     shape.setSize(sf::Vector2f(_width, _height));
-    shape.setFillColor(sf::Color(240, 0, 0));
+    shape.setFillColor(sf::Color(0, 0, 0));
     shape.setPosition(_x, _y);
 }
+
 
 void Entity::move(Direction direction) {
     if(direction == NORTH)

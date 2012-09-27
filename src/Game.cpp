@@ -1,6 +1,8 @@
 
 #include "Game.h"
 
+Enemy eni3;
+
 void centerEntity(Entity & e) {
     e.setPosition((SCREEN_WIDTH / 2) - (e.getWidth() / 2), (SCREEN_HEIGHT / 2) - (e.getHeight() / 2));
     e.shape.setPosition(e.getX(), e.getY());
@@ -42,13 +44,17 @@ void checkBorderCollision(Entity & e) {
        e.move(WEST);
 }
 void checkEntityCollision() {
-    if(p.isColliding(eni) || p.isColliding(eni2)) {
+    //if(p.isColliding(eni) || p.isColliding(eni2)) {
         //Lose
-        game_running = false;
-    }
+   // }
 
-    if(eni.isColliding(eni2)) {
-        eni.move(eni.flipDirection(eni.getDirection()));
+   // if(eni.isColliding(eni2)) {
+    //    eni.move(eni.flipDirection(eni.getDirection()));
+   // }
+}
+void checkDeath() {
+    if(p.getHealth() < 1) {
+        game_running = false;
     }
 }
 void checkInput() {
@@ -77,6 +83,8 @@ void checkInput() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
+    enemies.push_back(new Enemy);
+    enemies.push_back(new Enemy);
 
     srand(time(NULL));
     setupEntities();
@@ -93,11 +101,12 @@ int Game::setupEntities() {
     p.createShape();
 
 
-    randomPositionEntity(eni);
-    eni.createShape();
+    for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
+        Enemy * eni = *iter;
+        randomPositionEntity(*eni);
+        eni->createShape();
+    }
 
-    randomPositionEntity(eni2);
-    eni2.createShape();
 }
 int Game::start() {
     game_running = true;
@@ -113,13 +122,16 @@ int Game::start() {
             checkInput();
             checkBorderCollision(p);
             checkEntityCollision();
-            eni.stalkPlayer(p);
-            eni2.stalkPlayer(p);
-
+            for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
+                Enemy *eni = *iter;
+                eni->stalkPlayer(p);
+            }
             window.clear(sf::Color(0,230,0));
             window.draw(p.shape);
-            window.draw(eni.shape);
-            window.draw(eni2.shape);
+            for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
+                Enemy *eni = *iter;
+                window.draw(eni->shape);
+            }
             window.display();
         }
         setupEntities();
