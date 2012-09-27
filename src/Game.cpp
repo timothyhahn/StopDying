@@ -1,15 +1,16 @@
 
 #include "Game.h"
 
-Enemy eni3;
-
 void centerEntity(Entity & e) {
     e.setPosition((SCREEN_WIDTH / 2) - (e.getWidth() / 2), (SCREEN_HEIGHT / 2) - (e.getHeight() / 2));
     e.shape.setPosition(e.getX(), e.getY());
 }
-
+void centerEntityOnPlayer(Entity & e) {
+    e.setPosition(p.getX(), p.getY());
+    e.shape.setPosition(e.getX(), e.getY());
+}
 void randomPositionEntity(Entity & e) {
-    centerEntity(e);
+    centerEntityOnPlayer(e);
 
     int north_or_south = rand() % 2 + 1; // 1 = NORTH, 2 = SOUTH
     int west_or_east = rand() % 2 + 1; // 1 = WEST, 2 = EAST
@@ -71,6 +72,19 @@ void checkEntityCollision() {
 
     }
 }
+
+void spawnEnemies() {
+    float percent_chance = spawn_rate * 10000;
+
+    int random_number = rand() % 10000;
+    if(random_number < percent_chance) {
+        Enemy * eni = new Enemy;
+        randomPositionEntity(*eni);
+        eni->createShape();
+        enemies.push_back(eni);
+    }
+}
+
 void checkDeath() {
     if(p.getHealth() < 1) {
         game_running = false;
@@ -102,11 +116,12 @@ void checkInput() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
+    //enemies.push_back(new Enemy);
+    //enemies.push_back(new Enemy);
+    //enemies.push_back(new Enemy);
     enemies.push_back(new Enemy);
-    enemies.push_back(new Enemy);
-    enemies.push_back(new Enemy);
-    enemies.push_back(new Enemy);
-
+    
+    spawn_rate = 0.01f;
     srand(time(NULL));
     setupEntities();
     game_over = false;
@@ -127,7 +142,7 @@ int Game::setupEntities() {
         randomPositionEntity(*eni);
         eni->createShape();
     }
-
+    return 0;
 }
 int Game::start() {
     game_running = true;
@@ -140,6 +155,8 @@ int Game::start() {
                     window.close();
             }
 
+
+            spawnEnemies();
             checkInput();
             checkBorderCollision(p);
             checkEntityCollision();
