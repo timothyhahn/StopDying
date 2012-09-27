@@ -5,7 +5,7 @@ Entity::Entity() {
     _y = 0;
     _direction = NORTH;
     _health = 100;
-    _movement_rate = 10;
+    _movement_rate = 9;
     _width = 50;
     _height = 50;
 }
@@ -97,7 +97,7 @@ void Entity::move(Direction direction) {
     shape.setPosition(_x, _y);
 }
 Direction Entity::flipDirection(Direction direction) {
-        if(direction == NORTH) 
+        if(direction == NORTH)
             return SOUTH;
         else if (direction == SOUTH)
             return NORTH;
@@ -121,10 +121,10 @@ bool Entity::isColliding(Entity e) {
     bool yOverlap = false;
 
     // Check X axis collision
-    
+
     // Grab the x axes for both this and e
     float thisXCoord [2] = {getX(), getX() + getWidth()};
-    float eXCoord [2] = {e.getX(), e.getX() + getWidth()};
+    float eXCoord [2] = {e.getX(), e.getX() + e.getWidth()};
 
     // Determine leftmost shape
     bool isThisLeftmost;
@@ -140,10 +140,10 @@ bool Entity::isColliding(Entity e) {
             xOverlap = true;
     }
     // Check Y axis collision
-    
+
     // Grab the Y axes for both this and e
     float thisYCoord [2] = {getY(), getY() + getHeight()};
-    float eYCoord [2] = {e.getY(), e.getY() + getHeight()};
+    float eYCoord [2] = {e.getY(), e.getY() + e.getHeight()};
 
     // Determine upmost shape
     bool isThisUpmost;
@@ -158,7 +158,7 @@ bool Entity::isColliding(Entity e) {
         if((thisYCoord[0] - eYCoord[1]) <= 0)
             yOverlap = true;
     }
-    
+
 
     return (xOverlap && yOverlap);
 }

@@ -1,6 +1,36 @@
 
 #include "Game.h"
 
+void centerEntity(Entity & e) {
+    e.setPosition((SCREEN_WIDTH / 2) - (e.getWidth() / 2), (SCREEN_HEIGHT / 2) - (e.getHeight() / 2));
+    e.shape.setPosition(e.getX(), e.getY());
+}
+
+void randomPositionEntity(Entity & e) {
+    centerEntity(e);
+
+    int north_or_south = rand() % 2 + 1; // 1 = NORTH, 2 = SOUTH
+    int west_or_east = rand() % 2 + 1; // 1 = WEST, 2 = EAST
+
+    int maxXOffset = (SCREEN_WIDTH - e.getWidth()) / 2;
+    int minXOffset = maxXOffset / 4;
+    maxXOffset -= minXOffset;
+    int xOffset = rand() % maxXOffset + minXOffset;
+
+    int maxYOffset = (SCREEN_HEIGHT - e.getHeight()) / 2;
+    int minYOffset = maxYOffset / 4;
+    maxYOffset -= minYOffset;
+    int yOffset = rand() & maxYOffset + minYOffset;
+
+    if(north_or_south == 1)
+        yOffset = -yOffset;
+    if(west_or_east == 1)
+        xOffset = -xOffset;
+
+    e.setPosition(e.getX() + xOffset, e.getY() + yOffset);
+
+}
+
 void checkBorderCollision(Entity & e) {
    if(e.getY() < 0)
        e.move(SOUTH);
@@ -14,6 +44,7 @@ void checkBorderCollision(Entity & e) {
 void checkEntityCollision() {
     if(p.isColliding(eni) || p.isColliding(eni2)) {
         //Lose
+        game_running = false;
     }
 
     if(eni.isColliding(eni2)) {
@@ -46,37 +77,53 @@ void checkInput() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
-    p.setPosition(300,200);
-    p.createShape();
-    
-    eni.createShape();
-    
-    eni2.setPosition(400, 500);
-    eni2.createShape();
-    
-    start();
+
+    srand(time(NULL));
+    setupEntities();
+    game_over = false;
+    while(!game_over){
+        start();
+    }
     return 0;
 }
-int Game::start() {
+int Game::setupEntities() {
+    srand(time(NULL));
 
+    centerEntity(p);
+    p.createShape();
+
+
+    randomPositionEntity(eni);
+    eni.createShape();
+
+    randomPositionEntity(eni2);
+    eni2.createShape();
+}
+int Game::start() {
+    game_running = true;
     while(window.isOpen()) {
-        sf::Event event;
-        while(window.pollEvent(event)) {
-            if(event.type == sf::Event::Closed)
-                window.close();
+        while(game_running) {
+            sf::Event event;
+
+            while(window.pollEvent(event)) {
+                if(event.type == sf::Event::Closed)
+                    window.close();
+            }
+
+            checkInput();
+            checkBorderCollision(p);
+            checkEntityCollision();
+            eni.stalkPlayer(p);
+            eni2.stalkPlayer(p);
+
+            window.clear(sf::Color(0,230,0));
+            window.draw(p.shape);
+            window.draw(eni.shape);
+            window.draw(eni2.shape);
+            window.display();
         }
-    
-        checkInput();
-        checkBorderCollision(p);
-        checkEntityCollision();
-        eni.stalkPlayer(p);
-        eni2.stalkPlayer(p);
-        
-        window.clear(sf::Color(0,230,0));
-        window.draw(p.shape); 
-        window.draw(eni.shape); 
-        window.draw(eni2.shape);
-        window.display();
+        setupEntities();
+        game_running = true;
     }
     return 0;
 }

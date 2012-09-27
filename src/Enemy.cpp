@@ -1,7 +1,6 @@
 #include "Enemy.h"
 
 Enemy::Enemy() {
-    printf("yolo");
     setPosition(0,0);
     setDirection(NORTH);
     setHealth(10);
@@ -9,7 +8,7 @@ Enemy::Enemy() {
     setWidth(20);
     setHeight(20);
 }
-void Enemy::stalkPlayer(Player p) { 
+void Enemy::stalkPlayer(Player p) {
     int yDifference = p.getY() - getY();
     int xDifference = p.getX() - getX();
     if(abs(yDifference) > abs(xDifference)) { //Move the farther one
