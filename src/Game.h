@@ -23,6 +23,7 @@ static Player p;
 static std::vector<Enemy *> enemies; // None Player Entities
 static bool game_over;
 static bool game_running;
+
 class Game {
 
     public:

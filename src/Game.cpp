@@ -48,9 +48,28 @@ void checkEntityCollision() {
         //Lose
    // }
 
-   // if(eni.isColliding(eni2)) {
-    //    eni.move(eni.flipDirection(eni.getDirection()));
-   // }
+    for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
+        Enemy * eni = *iter;
+        for(std::vector<Enemy*>::iterator checkAgainst = enemies.begin(); checkAgainst != enemies.end(); ++checkAgainst) {
+            Enemy * next = *checkAgainst;
+            Enemy nexter = *next;
+
+            Direction moveTo = eni->flipDirection(eni->getDirection());
+            if(eni->isColliding(nexter) && (eni != next)) {
+                bool checkOverlap = true;
+                    while(checkOverlap) {
+                        eni->move(moveTo);
+                        if(eni->isColliding(nexter) && (eni != next)) {
+                            checkOverlap = true;
+                        } else {
+                            checkOverlap = false;
+                        }
+                    }
+
+            }
+        }
+
+    }
 }
 void checkDeath() {
     if(p.getHealth() < 1) {
@@ -83,6 +102,8 @@ void checkInput() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
+    enemies.push_back(new Enemy);
+    enemies.push_back(new Enemy);
     enemies.push_back(new Enemy);
     enemies.push_back(new Enemy);
 
