@@ -45,10 +45,6 @@ void checkBorderCollision(Entity & e) {
        e.setPosition(SCREEN_WIDTH - e.getWidth(), e.getY());
 }
 void checkEntityCollision() {
-    //if(p.isColliding(eni) || p.isColliding(eni2)) {
-        //Lose
-   // }
-
     for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
         Enemy * eni = *iter;
 
@@ -97,7 +93,6 @@ void spawnEnemies() {
 }
 
 void checkDeath() {
-
     if(p.getHealth() < 1) {
         game_running = false;
         printf("dead!");
@@ -140,8 +135,6 @@ void checkInput() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
-    enemies.push_back(new Enemy);
-
     spawn_rate = 0.01f;
     srand(time(NULL));
     setupEntities();
@@ -158,6 +151,8 @@ int Game::setupEntities() {
     centerEntity(p);
     p.createShape();
 
+    enemies.clear();
+    enemies.push_back(new Enemy);
 
     for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
         Enemy * eni = *iter;

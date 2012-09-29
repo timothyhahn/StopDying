@@ -7,7 +7,7 @@ Player::Player() {
     setMovementRate(8);
     setWidth(50);
     setHeight(50);
-    setDamage(10);
+    setDamage(2);
 }
 void Player::createShape() {
     shape.setSize(sf::Vector2f(getWidth(), getHeight()));

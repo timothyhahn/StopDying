@@ -177,6 +177,6 @@ bool Entity::isColliding(Entity e) {
 
 void Entity::damage(Entity & e) {
     _health -= e.getDamage();
-    printf("Health: %d \n Damage: %d \n", _health, e.getDamage());
-
+    //printf("Health: %d \n Damage: %d \n", _health, e.getDamage());
 }
+

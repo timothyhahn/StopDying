@@ -6,7 +6,7 @@ Enemy::Enemy() {
     setMovementRate(5);
     setWidth(20);
     setHeight(20);
-    setDamage(5);
+    setDamage(10);
 }
 
 void Enemy::stalkPlayer(Player p) {
