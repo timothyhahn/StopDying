@@ -36,13 +36,13 @@ void randomPositionEntity(Entity & e) {
 
 void checkBorderCollision(Entity & e) {
    if(e.getY() < 0)
-       e.move(SOUTH);
+       e.setPosition(e.getX(), 0);
    if(e.getY() > SCREEN_HEIGHT - e.getHeight())
-       e.move(NORTH);
+       e.setPosition(e.getX(), SCREEN_HEIGHT - e.getHeight());
    if(e.getX() < 0)
-       e.move(EAST);
+       e.setPosition(0, e.getY());
    if(e.getX() > SCREEN_WIDTH - e.getWidth())
-       e.move(WEST);
+       e.setPosition(SCREEN_WIDTH - e.getWidth(), e.getY());
 }
 void checkEntityCollision() {
     //if(p.isColliding(eni) || p.isColliding(eni2)) {
@@ -51,6 +51,16 @@ void checkEntityCollision() {
 
     for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
         Enemy * eni = *iter;
+        
+        // Check if player is colliding with enemies
+        if(p.isColliding(*eni)) {
+            Direction moveTo = eni->getDirection();
+            p.move(moveTo);
+            eni->move(eni->flipDirection(moveTo));
+   
+        }
+        
+        // Check if enemies are colliding with each other
         for(std::vector<Enemy*>::iterator checkAgainst = enemies.begin(); checkAgainst != enemies.end(); ++checkAgainst) {
             Enemy * next = *checkAgainst;
             Enemy nexter = *next;

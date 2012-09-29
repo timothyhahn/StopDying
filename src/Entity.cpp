@@ -14,6 +14,7 @@ Entity::~Entity() {
 void Entity::setPosition(float x, float y) {
     _x = x;
     _y = y;
+    shape.setPosition(_x, _y);
 }
 
 
@@ -164,3 +165,4 @@ bool Entity::isColliding(Entity e) {
 
     return (xOverlap && yOverlap);
 }
+
