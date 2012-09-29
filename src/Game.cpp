@@ -51,15 +51,16 @@ void checkEntityCollision() {
 
     for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
         Enemy * eni = *iter;
-        
+
         // Check if player is colliding with enemies
         if(p.isColliding(*eni)) {
             Direction moveTo = eni->getDirection();
             p.move(moveTo);
             eni->move(eni->flipDirection(moveTo));
-   
+            p.damage(*eni);
+            eni->damage(p);
         }
-        
+
         // Check if enemies are colliding with each other
         for(std::vector<Enemy*>::iterator checkAgainst = enemies.begin(); checkAgainst != enemies.end(); ++checkAgainst) {
             Enemy * next = *checkAgainst;
@@ -96,9 +97,22 @@ void spawnEnemies() {
 }
 
 void checkDeath() {
+
     if(p.getHealth() < 1) {
         game_running = false;
+        printf("dead!");
     }
+    std::vector<Enemy*>::iterator iter = enemies.begin();
+
+    while(iter != enemies.end()) {
+        Enemy * eni = *iter;
+        if(eni->getHealth() <= 0) {
+            iter = enemies.erase(iter);
+        } else {
+            ++iter;
+        }
+    }
+
 }
 void checkInput() {
         Direction d = NONE;
@@ -126,11 +140,8 @@ void checkInput() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
-    //enemies.push_back(new Enemy);
-    //enemies.push_back(new Enemy);
-    //enemies.push_back(new Enemy);
     enemies.push_back(new Enemy);
-    
+
     spawn_rate = 0.01f;
     srand(time(NULL));
     setupEntities();
@@ -143,6 +154,7 @@ int Game::initialize() {
 int Game::setupEntities() {
     srand(time(NULL));
 
+    p = Player();
     centerEntity(p);
     p.createShape();
 
@@ -161,15 +173,17 @@ int Game::start() {
             sf::Event event;
 
             while(window.pollEvent(event)) {
-                if(event.type == sf::Event::Closed)
+                if(event.type == sf::Event::Closed) {
                     window.close();
+                    game_running = false;
+                    game_over = true;
+                }
             }
-
-
             spawnEnemies();
             checkInput();
             checkBorderCollision(p);
             checkEntityCollision();
+            checkDeath();
             for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
                 Enemy *eni = *iter;
                 eni->stalkPlayer(p);

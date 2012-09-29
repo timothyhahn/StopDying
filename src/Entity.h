@@ -31,9 +31,12 @@ class Entity {
         sf::RectangleShape shape;
         void setMovementRate(int movement_rate);
         int getMovementRate();
+        void setDamage(int damage);
+        int getDamage();
         virtual void createShape();
         void move(Direction direction);
         bool isColliding(Entity e);
         Direction flipDirection(Direction direction);
+        void damage(Entity & e);
 };
 #endif

@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include <stdio.h>
 Entity::Entity() {
     _x = 0;
     _y = 0;
@@ -64,6 +65,14 @@ void Entity::setMovementRate(int movement_rate) {
 
 int Entity::getMovementRate() {
     return _movement_rate;
+}
+
+void Entity::setDamage(int damage) {
+    _damage = damage;
+}
+
+int Entity::getDamage() {
+    return _damage;
 }
 
 void Entity::createShape() {
@@ -166,3 +175,8 @@ bool Entity::isColliding(Entity e) {
     return (xOverlap && yOverlap);
 }
 
+void Entity::damage(Entity & e) {
+    _health -= e.getDamage();
+    printf("Health: %d \n Damage: %d \n", _health, e.getDamage());
+
+}
