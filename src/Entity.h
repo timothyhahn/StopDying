@@ -18,8 +18,17 @@ class Entity {
         sf::Color _color;
 
     public:
+
+        /**
+         * Default constructor
+         */
         Entity();
         ~Entity();
+
+        /**
+         * Accesors and mutators
+         */
+
         void setPosition(float x, float y);
         float getX();
         float getY();
@@ -43,6 +52,10 @@ class Entity {
         void setColor(sf::Color color);
         sf::Color getColor();
         virtual void createShape();
+        
+        /** 
+         * Helper functions
+         */
         void move(Direction direction);
         bool isColliding(Entity e);
         Direction flipDirection(Direction direction);

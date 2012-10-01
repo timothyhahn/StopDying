@@ -1,14 +1,29 @@
 
 #include "Game.h"
-
+    
+/**
+ * Used to place the player in the middle of the screen in new games and restarts.
+ * @param e An entity that needs to move (passed by reference) 
+ */
 void centerEntity(Entity & e) {
-    e.setPosition((SCREEN_WIDTH / 2) - (e.getWidth() / 2), (SCREEN_HEIGHT / 2) - (e.getHeight() / 2));
+   e.setPosition((SCREEN_WIDTH / 2) - (e.getWidth() / 2), (SCREEN_HEIGHT / 2) - (e.getHeight() / 2));
     e.shape.setPosition(e.getX(), e.getY());
 }
+
+/**
+ * Used to place entities around the player.
+ * @ param e An entity that needs to be near the player.
+ */
 void centerEntityOnPlayer(Entity & e) {
-    e.setPosition(p.getX(), p.getY());
+   e.setPosition(p.getX(), p.getY());
     e.shape.setPosition(e.getX(), e.getY());
 }
+
+/**
+ * We don't want entities to actually be *on* the user, so we find a decent offset
+ * for both the X and Y axes, and offset them by that much.
+ * @param e An entity that is randomly offset from the player.
+ */
 void randomPositionEntity(Entity & e) {
     centerEntityOnPlayer(e);
 
@@ -32,6 +47,12 @@ void randomPositionEntity(Entity & e) {
     
     e.setPosition(e.getX() + xOffset, e.getY() + yOffset);
 }
+
+/**
+ * Makes sure the user doesn't get pushed off/move off the screen. If they do, their
+ * position is set to the lowest it should be
+ * @param e An entity that is kept from escaping the visible screen.
+ */
 void checkBorderCollision(Entity & e) {
    if(e.getY() < 0)
        e.setPosition(e.getX(), 0);
@@ -42,6 +63,13 @@ void checkBorderCollision(Entity & e) {
    if(e.getX() > SCREEN_WIDTH - e.getWidth())
        e.setPosition(SCREEN_WIDTH - e.getWidth(), e.getY());
 }
+
+/**
+ * Handles a numerous amount of collisions that happen in this game.
+ * Will detect if the player is colliding with an enemy or a bullet,
+ * or if an enemy is colliding with an enemy or bullet and then respond
+ * appropriately
+ */
 void checkEntityCollision() {
     for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
         Enemy * eni = *iter;
@@ -79,6 +107,9 @@ void checkEntityCollision() {
     }
 }
 
+/**
+ * Will handle various animations depending on different settings and magics.
+ */
 void checkAnimations() {
     if(p.isBlinking()) {
         if((p.getBlinkCounter() % 20) < 10) {
@@ -96,6 +127,9 @@ void checkAnimations() {
     }
 }
 
+/**
+ * Will randomly create enemies
+ */
 void spawnEnemies() {
     float percent_chance = spawn_rate * 10000;
 
@@ -108,6 +142,9 @@ void spawnEnemies() {
     }
 }
 
+/**
+ * If a player, enemy, or bullet has less than 1 health, it is frigging DEAD
+ */
 void checkDeath() {
     if(p.getHealth() < 1) {
         game_running = false;
@@ -116,7 +153,7 @@ void checkDeath() {
 
     while(iter != enemies.end()) {
         Enemy * eni = *iter;
-        if(eni->getHealth() <= 0) {
+        if(eni->getHealth() < 1) {
             iter = enemies.erase(iter);
         } else {
             ++iter;
@@ -124,7 +161,12 @@ void checkDeath() {
     }
 
 }
+
+/**
+ * Will read user input and react
+ */
 void checkInput() {
+        // Directional inputs
         Direction d = NONE;
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             d = NORTH;
@@ -147,6 +189,10 @@ void checkInput() {
             p.move(d);
 }
 
+/**
+ * Sets up the window that will be used and various game settings
+ * Should only be run once
+ */
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
@@ -159,6 +205,10 @@ int Game::initialize() {
     }
     return 0;
 }
+
+/**
+ * Sets up various elements that are repeatable and can be used for restarting a game
+ */
 int Game::setupEntities() {
     srand(time(NULL));
 
@@ -176,6 +226,10 @@ int Game::setupEntities() {
     }
     return 0;
 }
+
+/**
+ * Runs the game! WHOO!
+ */
 int Game::start() {
     game_running = true;
     while(window.isOpen()) {
