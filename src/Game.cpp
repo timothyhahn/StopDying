@@ -29,11 +29,9 @@ void randomPositionEntity(Entity & e) {
         yOffset = -yOffset;
     if(west_or_east == 1)
         xOffset = -xOffset;
-
+    
     e.setPosition(e.getX() + xOffset, e.getY() + yOffset);
-
 }
-
 void checkBorderCollision(Entity & e) {
    if(e.getY() < 0)
        e.setPosition(e.getX(), 0);
@@ -55,6 +53,7 @@ void checkEntityCollision() {
             eni->move(eni->flipDirection(moveTo));
             p.damage(*eni);
             eni->damage(p);
+            p.setBlinking(true);
         }
 
         // Check if enemies are colliding with each other
@@ -80,6 +79,23 @@ void checkEntityCollision() {
     }
 }
 
+void checkAnimations() {
+    if(p.isBlinking()) {
+        if((p.getBlinkCounter() % 20) < 10) {
+            p.shape.setFillColor(sf::Color(0,0,0,0));
+        } else {
+            p.shape.setFillColor(p.getColor());
+        }
+        p.setBlinkCounter(p.getBlinkCounter() + 1);
+        if(p.getBlinkCounter() > 30) {
+            p.setBlinkCounter(0);
+            p.setBlinking(false);
+            p.shape.setFillColor(p.getColor());
+        }
+
+    }
+}
+
 void spawnEnemies() {
     float percent_chance = spawn_rate * 10000;
 
@@ -95,7 +111,6 @@ void spawnEnemies() {
 void checkDeath() {
     if(p.getHealth() < 1) {
         game_running = false;
-        printf("dead!");
     }
     std::vector<Enemy*>::iterator iter = enemies.begin();
 
@@ -178,6 +193,7 @@ int Game::start() {
             checkInput();
             checkBorderCollision(p);
             checkEntityCollision();
+            checkAnimations(); 
             checkDeath();
             for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
                 Enemy *eni = *iter;

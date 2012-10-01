@@ -7,6 +7,7 @@ Enemy::Enemy() {
     setWidth(20);
     setHeight(20);
     setDamage(10);
+    setColor(sf::Color(0,0,220));
 }
 
 void Enemy::stalkPlayer(Player p) {
@@ -26,7 +27,7 @@ void Enemy::stalkPlayer(Player p) {
 }
 void Enemy::createShape() {
     shape.setSize(sf::Vector2f(getWidth(), getHeight()));
-    shape.setFillColor(sf::Color(0, 0, 220));
+    shape.setFillColor(getColor());
     shape.setPosition(getX(), getY());
 
 }

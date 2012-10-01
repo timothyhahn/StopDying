@@ -8,7 +8,10 @@ Entity::Entity() {
     _damage = 0;
     _movement_rate = 10;
     _width = 1;
-    _height =1;
+    _height = 1;
+    _blinking = false;
+    _blink_counter = 0;
+    _color = sf::Color(10, 10, 10);
 }
 Entity::~Entity() {
 }
@@ -75,9 +78,33 @@ int Entity::getDamage() {
     return _damage;
 }
 
+void Entity::setBlinking(bool blinking) {
+    _blinking = blinking;
+}
+
+bool Entity::isBlinking() {
+    return _blinking;
+}
+
+void Entity::setBlinkCounter(int blink_counter) {
+    _blink_counter = blink_counter;
+}
+
+int Entity::getBlinkCounter() {
+    return _blink_counter;
+}
+
+void Entity::setColor(sf::Color color) {
+    _color = color;
+}
+
+sf::Color Entity::getColor() {
+    return _color;
+}
+
 void Entity::createShape() {
     shape.setSize(sf::Vector2f(_width, _height));
-    shape.setFillColor(sf::Color(0, 0, 0));
+    shape.setFillColor(_color);
     shape.setPosition(_x, _y);
 }
 

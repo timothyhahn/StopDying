@@ -13,6 +13,9 @@ class Entity {
         float _movement_rate;
         int _height;
         int _width;
+        bool _blinking;
+        int _blink_counter;
+        sf::Color _color;
 
     public:
         Entity();
@@ -33,6 +36,12 @@ class Entity {
         int getMovementRate();
         void setDamage(int damage);
         int getDamage();
+        void setBlinking(bool blinking);
+        bool isBlinking();
+        void setBlinkCounter(int blink_counter);
+        int getBlinkCounter();
+        void setColor(sf::Color color);
+        sf::Color getColor();
         virtual void createShape();
         void move(Direction direction);
         bool isColliding(Entity e);
