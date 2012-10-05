@@ -1,13 +1,13 @@
 #include "Bullet.h"
 Bullet::Bullet() {
-    setPosition(0,0);
+    setPosition(100,100);
     setDirection(NORTH);
-    setHealth(10);
-    setMovementRate(5);
-    setWidth(20);
-    setHeight(20);
+    setHealth(1);
+    setMovementRate(10);
+    setWidth(5);
+    setHeight(5);
     setDamage(10);
-    setColor(sf::Color(0,0,220));
+    setColor(sf::Color(0,0,0));
 }
 
 void Bullet::fire(Direction d) {

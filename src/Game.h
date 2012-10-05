@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Bullet.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <SFML/Graphics.hpp>
@@ -20,7 +21,9 @@
 
 static sf::RenderWindow window;
 static Player p;
-static std::vector<Enemy *> enemies; // None Player Entities
+static Bullet b;
+static bool fired;
+static std::vector<Enemy *> enemies; // Non Player Entities
 static bool game_over;
 static bool game_running;
 static float spawn_rate;

@@ -1,9 +1,9 @@
 
 #include "Game.h"
-    
+
 /**
  * Used to place the player in the middle of the screen in new games and restarts.
- * @param e An entity that needs to move (passed by reference) 
+ * @param e An entity that needs to move (passed by reference)
  */
 void centerEntity(Entity & e) {
    e.setPosition((SCREEN_WIDTH / 2) - (e.getWidth() / 2), (SCREEN_HEIGHT / 2) - (e.getHeight() / 2));
@@ -44,7 +44,7 @@ void randomPositionEntity(Entity & e) {
         yOffset = -yOffset;
     if(west_or_east == 1)
         xOffset = -xOffset;
-    
+
     e.setPosition(e.getX() + xOffset, e.getY() + yOffset);
 }
 
@@ -66,7 +66,7 @@ void checkBorderCollision(Entity & e) {
 
 /**
  * Handles a numerous amount of collisions that happen in this game.
- * Will detect if the player is colliding with an enemy or a bullet,
+ * Will detect if the player is colliding with an enemy or a ,
  * or if an enemy is colliding with an enemy or bullet and then respond
  * appropriately
  */
@@ -74,6 +74,10 @@ void checkEntityCollision() {
     for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
         Enemy * eni = *iter;
 
+        if(b.isColliding(*eni)) {
+            b.damage(*eni);
+            eni->damage(b);
+        }
         // Check if player is colliding with enemies
         if(p.isColliding(*eni)) {
             Direction moveTo = eni->getDirection();
@@ -124,6 +128,11 @@ void checkAnimations() {
             p.shape.setFillColor(p.getColor());
         }
 
+    }
+    if(fired) {
+        b.move(SOUTH);
+
+        printf("bullet at: %d\n", b.getY());
     }
 }
 
@@ -187,6 +196,13 @@ void checkInput() {
         }
         if(d != NONE)
             p.move(d);
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+           b = Bullet();
+           b.createShape();
+           b.setPosition(SCREEN_WIDTH / 2, 0);
+            fired = true;
+        }
 }
 
 /**
@@ -247,8 +263,9 @@ int Game::start() {
             checkInput();
             checkBorderCollision(p);
             checkEntityCollision();
-            checkAnimations(); 
+            checkAnimations();
             checkDeath();
+
             for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
                 Enemy *eni = *iter;
                 eni->stalkPlayer(p);
@@ -259,6 +276,8 @@ int Game::start() {
                 Enemy *eni = *iter;
                 window.draw(eni->shape);
             }
+            if(fired)
+                window.draw(b.shape);
             window.display();
         }
         setupEntities();
