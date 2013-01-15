@@ -1,12 +1,30 @@
 
 #include "Game.h"
 
+int numDigits(int x) {
+    int digits = 0;
+    while (x) {
+        x /= 10;
+        digits++;
+    }
+    return digits;
+}
+static inline std::string processScore() { 
+    std::stringstream padding;
+    for(int i = numDigits(score); i < 7; i++) {
+        padding << "0";
+    }
+    std::stringstream type; 
+    type << score; 
+    return padding.str() + type.str(); 
+}
+
 /**
  * Used to place the player in the middle of the screen in new games and restarts.
  * @param e An entity that needs to move (passed by reference)
  */
 void centerEntity(Entity & e) {
-   e.setPosition((SCREEN_WIDTH / 2) - (e.getWidth() / 2), (SCREEN_HEIGHT / 2) - (e.getHeight() / 2));
+   e.setPosition((GAME_WIDTH / 2) - (e.getWidth() / 2), (GAME_HEIGHT / 2) - (e.getHeight() / 2));
     e.shape.setPosition(e.getX(), e.getY());
 }
 
@@ -30,13 +48,13 @@ void randomPositionEntity(Entity & e) {
     int north_or_south = rand() % 2 + 1; // 1 = NORTH, 2 = SOUTH
     int west_or_east = rand() % 2 + 1; // 1 = WEST, 2 = EAST
 
-    int maxXOffset = (SCREEN_WIDTH - e.getWidth()) / 2;
-    int minXOffset = maxXOffset / 4;
+    int maxXOffset = (GAME_WIDTH - e.getWidth()) / 2;
+    int minXOffset = maxXOffset / 1.5;
     maxXOffset -= minXOffset;
     int xOffset = rand() % maxXOffset + minXOffset;
 
-    int maxYOffset = (SCREEN_HEIGHT - e.getHeight()) / 2;
-    int minYOffset = maxYOffset / 4;
+    int maxYOffset = (GAME_HEIGHT - e.getHeight()) / 2;
+    int minYOffset = maxYOffset / 1.5;
     maxYOffset -= minYOffset;
     int yOffset = rand() & maxYOffset + minYOffset;
 
@@ -56,12 +74,12 @@ void randomPositionEntity(Entity & e) {
 void checkBorderCollision(Entity & e) {
    if(e.getY() < 0)
        e.setPosition(e.getX(), 0);
-   if(e.getY() > SCREEN_HEIGHT - e.getHeight())
-       e.setPosition(e.getX(), SCREEN_HEIGHT - e.getHeight());
+   if(e.getY() > GAME_HEIGHT - e.getHeight())
+       e.setPosition(e.getX(), GAME_HEIGHT - e.getHeight());
    if(e.getX() < 0)
        e.setPosition(0, e.getY());
-   if(e.getX() > SCREEN_WIDTH - e.getWidth())
-       e.setPosition(SCREEN_WIDTH - e.getWidth(), e.getY());
+   if(e.getX() > GAME_WIDTH - e.getWidth())
+       e.setPosition(GAME_WIDTH - e.getWidth(), e.getY());
 }
 
 /**
@@ -80,6 +98,7 @@ void checkEntityCollision() {
             if(eni->isColliding(*b)) {
                 eni->damage(*b);
                 b->damage(*eni);
+                score += 50;
             }
         }
         
@@ -190,7 +209,7 @@ void checkDeath() {
 
     while(bIter != bullets.end()) {
         Bullet * b = *bIter;
-        if(b->getX() < 0 || b->getX() > SCREEN_WIDTH || b->getY() < 0 || b->getY() > SCREEN_HEIGHT) {
+        if(b->getX() < 0 || b->getX() > GAME_WIDTH || b->getY() < 0 || b->getY() > GAME_HEIGHT) {
             bIter = bullets.erase(bIter);
             p.setBullets(bullets);
         } else {
@@ -225,9 +244,87 @@ void checkInput() {
         if(d != NONE)
             p.move(d);
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            p.shoot();
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::X)) {
+            if(time_since_fire >= SHOOTING_OFFSET){
+                p.shoot();
+                time_since_fire = 0;
+            } 
         }
+}
+
+void updateScore() {
+    int addToScore = 1;
+    addToScore += (enemies.size() * 3);
+    if(p.getHealth() < 40) {
+        addToScore += 2;
+    }
+    score += addToScore;
+}
+
+void updateInterface() {
+    while(!interface.empty()) {
+        delete interface.back(), interface.pop_back();
+    }
+    interface.clear();
+
+    // Background
+    sf::RectangleShape * background = new sf::RectangleShape();
+    background->setSize(sf::Vector2f(INTERFACE_WIDTH, INTERFACE_HEIGHT));
+    background->setFillColor(sf::Color::Black);
+    background->setPosition(0, GAME_HEIGHT + 1);
+    interface.push_back(background);
+
+    // Columns and Rows
+    unsigned int column1Offset = 50;
+    unsigned int row1Offset = GAME_HEIGHT + 30; 
+    unsigned int column2Offset = (INTERFACE_WIDTH / 2);
+    unsigned int row2Offset = GAME_HEIGHT + 90;
+
+    // Health Bar (column 1/2, row 1)
+    unsigned int healthBarWidth = INTERFACE_WIDTH - (column1Offset * 2);
+    unsigned int healthBarHeight = 30;
+    unsigned int healthBarThickness = 5;
+
+    sf::RectangleShape * healthOutline = new sf::RectangleShape();
+    healthOutline->setSize(sf::Vector2f(healthBarWidth, healthBarHeight));
+    healthOutline->setOutlineColor(sf::Color::White);
+    healthOutline->setOutlineThickness(healthBarThickness);
+    healthOutline->setFillColor(sf::Color::Black);
+    healthOutline->setPosition(column1Offset, row1Offset);
+    interface.push_back(healthOutline);
+
+    float healthBarAmount;
+    if(p.getHealth() > 0) { // In case of negative health
+        float healthRatio = p.getHealth() / 100.0f;
+        healthBarAmount = healthBarWidth * healthRatio;
+    } else {
+        healthBarAmount = 0;
+    }
+    sf::RectangleShape * healthBar = new sf::RectangleShape();
+    healthBar->setSize(sf::Vector2f(healthBarAmount, healthBarHeight));
+    healthBar->setFillColor(sf::Color::Red);
+    healthBar->setPosition(column1Offset, row1Offset);
+    interface.push_back(healthBar);
+
+    // Score (column 2, row 2)
+
+    sf::Text * scoreText = new sf::Text();
+    scoreText->setString(processScore());
+    scoreText->setCharacterSize(90);
+    scoreText->setColor(sf::Color::Green);
+    scoreText->setPosition(column2Offset, row2Offset);
+    interface.push_back(scoreText);
+}
+
+void updateGameClocks() {
+    if(time_since_fire < SHOOTING_OFFSET)
+        time_since_fire++;
+
+    float current_time = fps_clock.restart().asSeconds();
+    float fps = 1.f / (current_time - last_time);
+    last_time = current_time;
+
+    //printf("fps: %f\n", fps);
 }
 
 /**
@@ -241,6 +338,8 @@ int Game::initialize() {
     srand(time(NULL));
     setupEntities();
     game_over = false;
+
+    last_time = 0;
     while(!game_over){
         start();
     }
@@ -267,6 +366,9 @@ int Game::setupEntities() {
         randomPositionEntity(*eni);
         eni->createShape();
     }
+    score = 1;
+    time_since_fire = SHOOTING_OFFSET;
+    
     return 0;
 }
 
@@ -294,7 +396,9 @@ int Game::start() {
             checkEntityCollision();
             checkAnimations();
             checkDeath();
-
+            updateScore();
+            updateInterface();
+            updateGameClocks();
 
             for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
                 Enemy *eni = *iter;
@@ -310,6 +414,11 @@ int Game::start() {
             for(std::vector<Bullet*>::iterator iter = bullets.begin(); iter != bullets.end(); ++iter) {
                 Bullet *b = *iter;
                 window.draw(b->shape);
+            }
+
+            for(std::vector<sf::Drawable*>::iterator iter = interface.begin(); iter != interface.end(); ++iter) {
+                sf::Drawable *d = *iter;
+                window.draw(*d);
             }
 
             window.display();
