@@ -1,10 +1,11 @@
 #ifndef BULLET_H
 #define BULLET_H
 #include "Entity.h"
-#include "Player.h"
 #include <stdlib.h>
 
 class Bullet : public Entity {
+    private:
+        bool _fired;
     public:
 
         /**
@@ -12,11 +13,13 @@ class Bullet : public Entity {
          */
         Bullet();
 
+        bool isFired();
+        void setFired(bool fired);
         /**
          * Tells the enemy to find the player and try to catch them
          * @param p The player that the enemy wants to satlk
          */
-        void fire(Direction d);
+        void fire();
        
         /**
          * Bulllet's `createShape` that overrides Bullet's virtual createShape

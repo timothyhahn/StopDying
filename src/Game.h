@@ -21,8 +21,7 @@
 
 static sf::RenderWindow window;
 static Player p;
-static Bullet b;
-static bool fired;
+static std::vector<Bullet *> bullets;
 static std::vector<Enemy *> enemies; // Non Player Entities
 static bool game_over;
 static bool game_running;

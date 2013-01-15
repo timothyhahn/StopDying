@@ -74,10 +74,15 @@ void checkEntityCollision() {
     for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
         Enemy * eni = *iter;
 
-        if(b.isColliding(*eni)) {
-            b.damage(*eni);
-            eni->damage(b);
+        // Check if bullets are colliding with enemies
+        for(std::vector<Bullet*>::iterator checkAgainst = bullets.begin(); checkAgainst != bullets.end(); ++checkAgainst) {
+            Bullet * b = *checkAgainst;
+            if(eni->isColliding(*b)) {
+                eni->damage(*b);
+                b->damage(*eni);
+            }
         }
+        
         // Check if player is colliding with enemies
         if(p.isColliding(*eni)) {
             Direction moveTo = eni->getDirection();
@@ -129,11 +134,11 @@ void checkAnimations() {
         }
 
     }
-    if(fired) {
-        b.move(SOUTH);
-
-        printf("bullet at: %d\n", b.getY());
+    for(std::vector<Bullet*>::iterator iter = bullets.begin(); iter != bullets.end(); ++iter) {
+        Bullet *b = *iter;
+        b->fire();
     }
+
 }
 
 /**
@@ -158,17 +163,40 @@ void checkDeath() {
     if(p.getHealth() < 1) {
         game_running = false;
     }
-    std::vector<Enemy*>::iterator iter = enemies.begin();
+    std::vector<Enemy*>::iterator eIter = enemies.begin();
 
-    while(iter != enemies.end()) {
-        Enemy * eni = *iter;
+    while(eIter != enemies.end()) {
+        Enemy * eni = *eIter;
         if(eni->getHealth() < 1) {
-            iter = enemies.erase(iter);
+            eIter = enemies.erase(eIter);
         } else {
-            ++iter;
+            ++eIter;
         }
     }
 
+    std::vector<Bullet*>::iterator bIter = bullets.begin();
+    while(bIter != bullets.end()) {
+        Bullet * b = *bIter;
+        if(b->getHealth() < 1) {
+            bIter = bullets.erase(bIter);
+            p.setBullets(bullets);
+        } else {
+            ++bIter;
+        }
+    }
+
+    // Check to see if a bullet is "off screen, in which case it DIES"
+    bIter = bullets.begin();
+
+    while(bIter != bullets.end()) {
+        Bullet * b = *bIter;
+        if(b->getX() < 0 || b->getX() > SCREEN_WIDTH || b->getY() < 0 || b->getY() > SCREEN_HEIGHT) {
+            bIter = bullets.erase(bIter);
+            p.setBullets(bullets);
+        } else {
+            ++bIter;
+        }
+    }
 }
 
 /**
@@ -198,10 +226,7 @@ void checkInput() {
             p.move(d);
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-           b = Bullet();
-           b.createShape();
-           b.setPosition(SCREEN_WIDTH / 2, 0);
-            fired = true;
+            p.shoot();
         }
 }
 
@@ -235,6 +260,8 @@ int Game::setupEntities() {
     enemies.clear();
     enemies.push_back(new Enemy);
 
+    bullets.clear();
+
     for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
         Enemy * eni = *iter;
         randomPositionEntity(*eni);
@@ -259,12 +286,15 @@ int Game::start() {
                     game_over = true;
                 }
             }
+
+            bullets = p.getBullets();
             spawnEnemies();
             checkInput();
             checkBorderCollision(p);
             checkEntityCollision();
             checkAnimations();
             checkDeath();
+
 
             for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
                 Enemy *eni = *iter;
@@ -276,10 +306,15 @@ int Game::start() {
                 Enemy *eni = *iter;
                 window.draw(eni->shape);
             }
-            if(fired)
-                window.draw(b.shape);
+
+            for(std::vector<Bullet*>::iterator iter = bullets.begin(); iter != bullets.end(); ++iter) {
+                Bullet *b = *iter;
+                window.draw(b->shape);
+            }
+
             window.display();
         }
+
         setupEntities();
         game_running = true;
     }

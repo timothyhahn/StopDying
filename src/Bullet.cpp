@@ -10,8 +10,15 @@ Bullet::Bullet() {
     setColor(sf::Color(0,0,0));
 }
 
-void Bullet::fire(Direction d) {
-    move(d);
+bool Bullet::isFired() {
+    return _fired;
+}
+
+void Bullet::setFired(bool fired) {
+    _fired = fired;
+}
+void Bullet::fire() {
+    move(getDirection());
 }
 void Bullet::createShape() {
     shape.setSize(sf::Vector2f(getWidth(), getHeight()));
