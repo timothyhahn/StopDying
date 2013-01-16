@@ -374,7 +374,7 @@ void updateGameClocks() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
-
+    jargle_bargle();
     spawn_rate = 0.01f;
     srand(time(NULL));
     setupEntities();
