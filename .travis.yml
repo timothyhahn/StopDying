@@ -1,6 +1,5 @@
 before_install:
- - sudo deb http://ppa.launchpad.net/sonkun/sfml-development/ubuntu precise main 
- - sudo deb-src http://ppa.launchpad.net/sonkun/sfml-development/ubuntu precise main 
+ - sudo ppa:sonkun/sfml-development
  - sudo apt-get update -qq
  - sudo apt-get csfml sfml
 install: make
