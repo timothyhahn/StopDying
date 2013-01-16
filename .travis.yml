@@ -4,5 +4,5 @@ before_install:
 
  - sudo apt-get update -qq
  - sudo apt-get install libcsfml-dev libsfml-dev -qq -y
-install: make
+script: make
 language: cpp
