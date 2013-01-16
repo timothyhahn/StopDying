@@ -9,6 +9,7 @@ Player::Player() {
     setHeight(50);
     setDamage(2);
     setColor(sf::Color(240, 0, 0));
+    _sword = new Sword();
 }
 
 void Player::createShape() {
@@ -23,6 +24,10 @@ std::vector<Bullet*> Player::getBullets() {
 
 void Player::setBullets(std::vector<Bullet*> bullets) {
     _bullets = bullets;
+}
+
+Sword * Player::getSword() {
+    return _sword;
 }
 
 void Player::shoot() {
@@ -66,5 +71,13 @@ void Player::shoot() {
 
         b->setPosition(bX, bY);
         _bullets.push_back(b);
+    } 
+}
+
+void Player::swing() {
+    if(!_sword->isSwung()) {
+        _sword->setPosition(getX() + (getWidth() / 2), getY() + (getWidth()/ 2));
+        _sword->setDirection(getDirection());
+        _sword->setSwung(true);
     } 
 }

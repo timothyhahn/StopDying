@@ -119,6 +119,17 @@ void checkEntityCollision() {
             sound.play();
         }
 
+        // Check if sword is colliding with enemies
+        Sword * s = p.getSword();
+        if(s->isColliding(*eni) && s->isSwung()) {
+            Direction moveTo = eni->getDirection();
+            eni->move(eni->flipDirection(moveTo));
+            eni->move(eni->flipDirection(moveTo));
+            s->damage(*eni);
+            eni->damage(*s);
+            printf("BAM!\n");
+        }
+
         // Check if enemies are colliding with each other
         for(std::vector<Enemy*>::iterator checkAgainst = enemies.begin(); checkAgainst != enemies.end(); ++checkAgainst) {
             Enemy * next = *checkAgainst;
@@ -142,30 +153,6 @@ void checkEntityCollision() {
     }
 }
 
-/**
- * Will handle various animations depending on different settings and magics.
- */
-void checkAnimations() {
-    if(p.isBlinking()) {
-        if((p.getBlinkCounter() % 20) < 10) {
-            p.shape.setFillColor(sf::Color(0,0,0,0));
-        } else {
-            p.shape.setFillColor(p.getColor());
-        }
-        p.setBlinkCounter(p.getBlinkCounter() + 1);
-        if(p.getBlinkCounter() > 30) {
-            p.setBlinkCounter(0);
-            p.setBlinking(false);
-            p.shape.setFillColor(p.getColor());
-        }
-
-    }
-    for(std::vector<Bullet*>::iterator iter = bullets.begin(); iter != bullets.end(); ++iter) {
-        Bullet *b = *iter;
-        b->fire();
-    }
-
-}
 
 /**
  * Will randomly create enemies
@@ -250,7 +237,11 @@ void checkInput() {
         }
         if(d != NONE)
             p.move(d);
-
+        
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
+            p.swing();
+        }
+        
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::X)) {
             if(time_since_fire >= SHOOTING_OFFSET){
                 p.shoot();
@@ -263,7 +254,39 @@ void checkInput() {
                 sound.play();
             } 
         }
+
 }
+
+/**
+ * Will handle various animations depending on different settings and magics.
+ */
+void updateAnimations() {
+    if(p.isBlinking()) {
+        if((p.getBlinkCounter() % 20) < 10) {
+            p.shape.setFillColor(sf::Color(0,0,0,0));
+        } else {
+            p.shape.setFillColor(p.getColor());
+        }
+        p.setBlinkCounter(p.getBlinkCounter() + 1);
+        if(p.getBlinkCounter() > 30) {
+            p.setBlinkCounter(0);
+            p.setBlinking(false);
+            p.shape.setFillColor(p.getColor());
+        }
+
+    }
+    for(std::vector<Bullet*>::iterator iter = bullets.begin(); iter != bullets.end(); ++iter) {
+        Bullet *b = *iter;
+        b->fire();
+    }
+
+    Sword * s = p.getSword();
+    if(s->isSwung()) {
+        s->swing();
+        s->setPosition(p.getX() + (p.getWidth() / 2), p.getY() + (p.getHeight() / 2));
+    }
+}
+
 
 void updateScore() {
     int addToScore = 1;
@@ -354,6 +377,9 @@ void updateInterface() {
         lastScoreText->setPosition(column2Offset + 10, row2Offset + 90);
         interface.push_back(lastScoreText);
     }
+
+    // Swords
+
 }
 
 void updateGameClocks() {
@@ -363,8 +389,6 @@ void updateGameClocks() {
     float current_time = fps_clock.restart().asSeconds();
     float fps = 1.f / (current_time - last_time);
     last_time = current_time;
-
-    //printf("fps: %f\n", fps);
 }
 
 /**
@@ -396,6 +420,7 @@ int Game::setupEntities() {
     p = Player();
     centerEntity(p);
     p.createShape();
+    p.getSword()->createShape();
 
     enemies.clear();
     enemies.push_back(new Enemy);
@@ -436,8 +461,8 @@ int Game::start() {
             checkInput();
             checkBorderCollision(p);
             checkEntityCollision();
-            checkAnimations();
             checkDeath();
+            updateAnimations();
             updateScore();
             updateInterface();
             updateGameClocks();
@@ -447,6 +472,12 @@ int Game::start() {
                 eni->stalkPlayer(p);
             }
             window.clear(sf::Color(0,230,0));
+
+            Sword * s = p.getSword();
+            if(s->isSwung()) {
+                window.draw(s->shape);
+            }
+            
             window.draw(p.shape);
             for(std::vector<Enemy*>::iterator iter  = enemies.begin(); iter != enemies.end(); ++iter) {
                 Enemy *eni = *iter;
