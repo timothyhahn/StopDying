@@ -36,6 +36,7 @@ static bool game_over;
 static bool game_running;
 static float spawn_rate;
 static unsigned long int score;
+static unsigned long int last_score;
 static int time_since_fire;
 static float last_time;
 static float current_time;
@@ -50,3 +51,5 @@ class Game {
 };
 
 #endif
+
+

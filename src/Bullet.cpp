@@ -4,8 +4,8 @@ Bullet::Bullet() {
     setDirection(NORTH);
     setHealth(1);
     setMovementRate(10);
-    setWidth(5);
-    setHeight(5);
+    setWidth(10);
+    setHeight(10);
     setDamage(10);
     setColor(sf::Color(0,0,0));
 }

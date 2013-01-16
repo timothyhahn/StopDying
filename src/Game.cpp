@@ -9,15 +9,16 @@ int numDigits(int x) {
     }
     return digits;
 }
-static inline std::string processScore() { 
+static inline std::string processScore(int x) { 
     std::stringstream padding;
-    for(int i = numDigits(score); i < 7; i++) {
+    for(int i = numDigits(x); i < 7; i++) {
         padding << "0";
     }
     std::stringstream type; 
-    type << score; 
+    type << x; 
     return padding.str() + type.str(); 
 }
+
 
 /**
  * Used to place the player in the middle of the screen in new games and restarts.
@@ -110,6 +111,12 @@ void checkEntityCollision() {
             p.damage(*eni);
             eni->damage(p);
             p.setBlinking(true);
+            sf::SoundBuffer buffer;
+            buffer.loadFromFile("hit.wav");
+
+            sf::Sound sound;
+            sound.setBuffer(buffer);
+            sound.play();
         }
 
         // Check if enemies are colliding with each other
@@ -248,6 +255,12 @@ void checkInput() {
             if(time_since_fire >= SHOOTING_OFFSET){
                 p.shoot();
                 time_since_fire = 0;
+                sf::SoundBuffer buffer;
+                buffer.loadFromFile("shoot.wav");
+
+                sf::Sound sound;
+                sound.setBuffer(buffer);
+                sound.play();
             } 
         }
 }
@@ -278,7 +291,7 @@ void updateInterface() {
     unsigned int column1Offset = 50;
     unsigned int row1Offset = GAME_HEIGHT + 30; 
     unsigned int column2Offset = (INTERFACE_WIDTH / 2);
-    unsigned int row2Offset = GAME_HEIGHT + 90;
+    unsigned int row2Offset = GAME_HEIGHT + 70;
 
     // Health Bar (column 1/2, row 1)
     unsigned int healthBarWidth = INTERFACE_WIDTH - (column1Offset * 2);
@@ -306,14 +319,41 @@ void updateInterface() {
     healthBar->setPosition(column1Offset, row1Offset);
     interface.push_back(healthBar);
 
+    // Weapons (column 1, row 2)
+
+    // Gun
+
+    sf::Text * xText = new sf::Text();
+    xText->setString("x: supah lazar");
+    xText->setCharacterSize(50);
+    xText->setColor(sf::Color::Yellow);
+    xText->setPosition(column1Offset, row2Offset);
+    interface.push_back(xText);
+
+
     // Score (column 2, row 2)
 
     sf::Text * scoreText = new sf::Text();
-    scoreText->setString(processScore());
-    scoreText->setCharacterSize(90);
+    if(score > 300 || last_score == 0){
+        scoreText->setString(processScore(score) + "\n");
+        scoreText->setCharacterSize(90);
+    } else {
+        scoreText->setString("STOP DYING\n");
+        scoreText->setCharacterSize(63);
+    }
+
     scoreText->setColor(sf::Color::Green);
     scoreText->setPosition(column2Offset, row2Offset);
     interface.push_back(scoreText);
+
+    if(last_score > 0){
+        sf::Text * lastScoreText = new sf::Text();
+        lastScoreText->setString("Last Score: " + processScore(last_score) + "\n");
+        lastScoreText->setCharacterSize(30);
+        lastScoreText->setColor(sf::Color::Green);
+        lastScoreText->setPosition(column2Offset + 10, row2Offset + 90);
+        interface.push_back(lastScoreText);
+    }
 }
 
 void updateGameClocks() {
@@ -334,12 +374,14 @@ void updateGameClocks() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
+
     spawn_rate = 0.01f;
     srand(time(NULL));
     setupEntities();
     game_over = false;
 
     last_time = 0;
+    last_score = 0;
     while(!game_over){
         start();
     }
@@ -366,6 +408,7 @@ int Game::setupEntities() {
         randomPositionEntity(*eni);
         eni->createShape();
     }
+    last_score = score;
     score = 1;
     time_since_fire = SHOOTING_OFFSET;
     

@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -m
 
-SFML= -lsfml-graphics -lsfml-window -lsfml-system
+SFML= -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 SOURCE=src
 
 StopDying: src/*.cpp src/*.h

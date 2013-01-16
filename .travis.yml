@@ -1,5 +1,5 @@
 before_install:
- - sudo ppa:sonkun/sfml-development
+ - sudo add-apt-repository ppa:sonkun/sfml-development
  - sudo apt-get update -qq
  - sudo apt-get csfml sfml
 install: make
