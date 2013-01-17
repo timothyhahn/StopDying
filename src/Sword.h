@@ -7,6 +7,8 @@ class Sword : public Entity {
     private:
         bool _swung;
         float _angle; // from 0 to 90 degrees
+        float _startAngle;
+        float _finalAngle;
     public:
 
         /**
@@ -17,11 +19,8 @@ class Sword : public Entity {
         bool isSwung();
         void setSwung(bool swung);
         float getAngle();
+        void setStartAngle(float startAngle);
         
-        /**
-         * Tells the enemy to find the player and try to catch them
-         * @param p The player that the enemy wants to satlk
-         */
         void swing();
        
         /**

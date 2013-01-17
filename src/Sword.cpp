@@ -8,7 +8,6 @@ Sword::Sword() {
     setHeight(90);
     setDamage(3);
     setColor(sf::Color(0,0,0));
-    _angle = 0.0f;
     _swung = false;
 }
 
@@ -22,14 +21,19 @@ void Sword::setSwung(bool swung) {
 float Sword::getAngle() {
     return _angle;
 }
+
+void Sword::setStartAngle(float startAngle) {
+    _angle = startAngle;
+    _startAngle = startAngle;  
+    _finalAngle = startAngle + 90.0f;  
+}
+
 void Sword::swing() {
     _angle += 9.0f;
 
-    float angle_start = 0;
-    float angle_max = 90;
 
-    if(_angle > 90) {
-        _angle = 0.0f;
+    if(_angle > _finalAngle) {
+        _angle = _startAngle;
         _swung = false;
     }
 
@@ -41,6 +45,7 @@ void Sword::createShape() {
     shape.setSize(sf::Vector2f(getWidth(), getHeight()));
     shape.setFillColor(getColor());
     shape.setPosition(getX(), getY());
+    _angle = 0;
 }
 
 bool Sword::swordColliding(Entity e) {

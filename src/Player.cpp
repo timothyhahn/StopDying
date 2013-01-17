@@ -4,7 +4,7 @@ Player::Player() {
     setPosition(0,0);
     setDirection(NORTH);
     setHealth(100);
-    setMovementRate(8);
+    setMovementRate(10);
     setWidth(50);
     setHeight(50);
     setDamage(2);
@@ -76,8 +76,32 @@ void Player::shoot() {
 
 void Player::swing() {
     if(!_sword->isSwung()) {
-        _sword->setPosition(getX() + (getWidth() / 2), getY() + (getWidth()/ 2));
-        _sword->setDirection(getDirection());
+
+        Direction d = getDirection();
+        float x,y,angle = 0;
+
+        if(d == NORTH) {
+            angle = 135;
+        } else if (d == SOUTH) {
+            angle = 315;
+        } else if (d == WEST) {
+            angle =  45;
+        } else if (d == EAST) {
+            angle = 225;
+        } else if (d == NORTH_WEST) {
+            angle = 90;
+        } else if (d == NORTH_EAST) {
+            angle = 180;
+        } else if (d == SOUTH_WEST) {
+            angle = 0;
+        } else if (d == SOUTH_EAST) {
+            angle = 270;
+        }
+        x = getX() + (getWidth() / 2);
+        y = getY() + (getHeight() / 2);
+        //_sword->setDirection(d);
+        _sword->setPosition(x,y);
+        _sword->setStartAngle(angle);
         _sword->setSwung(true);
     } 
 }

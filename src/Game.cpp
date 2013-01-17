@@ -124,7 +124,7 @@ void checkEntityCollision() {
         if(s->swordColliding(*eni) && s->isSwung()) {
             Direction moveTo = eni->getDirection();
 
-            eni->move(eni->flipDirection(moveTo), 50);
+            eni->move(eni->flipDirection(moveTo), 200);
             s->damage(*eni);
             eni->damage(*s);
         }
@@ -397,7 +397,7 @@ void updateGameClocks() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
-    spawn_rate = 0.05f;
+    spawn_rate = 0.008f;
     srand(time(NULL));
     setupEntities();
     game_over = false;
