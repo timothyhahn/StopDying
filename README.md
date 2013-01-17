@@ -1,7 +1,7 @@
 ### STOP DYING!!! ###
 
 TODO:
- * Reset game if Player dies
- * Add bullets
- * Add score
- * Flesh out the Player class a bit more.
+  * Add unit tests
+  * Refactor (oh dear lord so much refactoring)
+  * Add "Warning" for units off screen
+  * Basic unit graphics
