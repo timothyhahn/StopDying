@@ -109,27 +109,30 @@ void Entity::createShape() {
 }
 
 
-void Entity::move(Direction direction) {
+void Entity::move(Direction direction, float amount) {
+    if(amount == 0)
+        amount = getMovementRate();
+    
     if(direction == NORTH)
-        _y -= _movement_rate;
+        _y -= amount;
     else if(direction == SOUTH)
-        _y += _movement_rate;
+        _y += amount;
     else if(direction == WEST)
-        _x -= _movement_rate;
+        _x -= amount;
     else if(direction == EAST)
-        _x += _movement_rate;
+        _x += amount;
     else if(direction == NORTH_WEST) {
-        _x -= (_movement_rate / 2);
-        _y -= (_movement_rate / 2);
+        _x -= (amount / 2);
+        _y -= (amount / 2);
     } else if(direction == NORTH_EAST) {
-        _x += (_movement_rate / 2);
-        _y -= (_movement_rate / 2);
+        _x += (amount / 2);
+        _y -= (amount / 2);
     } else if(direction == SOUTH_WEST) {
-        _x -= (_movement_rate / 2);
-        _y += (_movement_rate / 2);
+        _x -= (amount / 2);
+        _y += (amount / 2);
     } else if(direction == SOUTH_EAST) {
-        _x += (_movement_rate / 2);
-        _y += (_movement_rate / 2);
+        _x += (amount / 2);
+        _y += (amount / 2);
     }
 
     _direction = direction;

@@ -28,6 +28,7 @@ class Sword : public Entity {
          * Sword's `createShape` that overrides Bullet's virtual createShape
          */
         void createShape();
+        bool swordColliding(Entity e);
 };
 
 #endif

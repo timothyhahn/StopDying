@@ -56,7 +56,7 @@ class Entity {
         /** 
          * Helper functions
          */
-        void move(Direction direction);
+        void move(Direction direction, float amount = 0);
         bool isColliding(Entity e);
         Direction flipDirection(Direction direction);
         void damage(Entity & e);

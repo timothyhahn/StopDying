@@ -121,13 +121,12 @@ void checkEntityCollision() {
 
         // Check if sword is colliding with enemies
         Sword * s = p.getSword();
-        if(s->isColliding(*eni) && s->isSwung()) {
+        if(s->swordColliding(*eni) && s->isSwung()) {
             Direction moveTo = eni->getDirection();
-            eni->move(eni->flipDirection(moveTo));
-            eni->move(eni->flipDirection(moveTo));
+
+            eni->move(eni->flipDirection(moveTo), 50);
             s->damage(*eni);
             eni->damage(*s);
-            printf("BAM!\n");
         }
 
         // Check if enemies are colliding with each other
@@ -398,7 +397,7 @@ void updateGameClocks() {
 int Game::initialize() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32), "Stop Dying!");
     window.setFramerateLimit(60);
-    spawn_rate = 0.01f;
+    spawn_rate = 0.05f;
     srand(time(NULL));
     setupEntities();
     game_over = false;
